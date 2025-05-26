@@ -1,2 +1,198 @@
-for i in range(100):
-    print("hey hey hee ")
+def randomize(n, p, w):
+    V = set(range(n))
+    E = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            if random.random() < p:
+                weight = random(range(1, w + 1))        #добавление случайного веса
+                E.append((i, j, weight))
+    g = (V, E)
+    return g
+
+
+class HeapItem:
+    def __init__(self, v, p):
+        self.v = v
+        self.priority = p
+
+    def __lt__(self, other):
+        return self.priority < other.priority
+
+    def __str__(self):
+        return f"{self.v}/{self.priority}"
+
+
+class Heap:
+    def __init__(self):
+        self.heap = []
+        self.position = {}  # Трекинг позиций вершин
+
+    def left_son(self, p):
+        return 2 * p + 1
+
+    def right_son(self, p):
+        return 2 * p + 2
+
+    def parent(self, p):
+        return (p - 1) // 2 if p != 0 else 0
+
+    def min_son(self, p):
+        left = self.left_son(p)
+        right = self.right_son(p)
+        n = len(self.heap)
+
+        if left >= n:
+            return -1
+        if right >= n:
+            return left
+
+        if self.heap[left] < self.heap[right]:
+            return left
+        else:
+            return right
+
+    def sift_up(self, p):
+        if p == 0:
+            return
+
+        prnt = self.parent(p)
+        while p > 0 and self.heap[p] < self.heap[prnt]:
+            self.position[self.heap[p].v] = prnt
+            self.position[self.heap[prnt].v] = p
+            self.heap[p], self.heap[prnt] = self.heap[prnt], self.heap[p]
+            p = prnt
+            prnt = self.parent(p)
+
+    def sift_down(self, p):
+        minCh = self.min_son(p)
+        while minCh != -1 and self.heap[p] > self.heap[minCh]:
+            self.position[self.heap[p].v] = minCh
+            self.position[self.heap[minCh].v] = p
+            self.heap[p], self.heap[minCh] = self.heap[minCh], self.heap[p]
+            p = minCh
+            minCh = self.min_son(p)
+
+    def add(self, x):
+        if x.v in self.position:
+            pos = self.position[x.v]
+            if x.priority < self.heap[pos].priority:
+                self.heap[pos].priority = x.priority
+                self.sift_up(pos)
+            return
+
+        self.heap.append(x)
+        self.position[x.v] = len(self.heap) - 1
+        self.sift_up(len(self.heap) - 1)
+
+    def get_min(self):
+        if not self.heap:
+            return None
+
+        min_elem = self.heap[0]
+        del self.position[min_elem.v]
+
+        last_elem = self.heap.pop()
+        if self.heap:
+            self.heap[0] = last_elem
+            self.position[last_elem.v] = 0
+            self.sift_down(0)
+        return min_elem
+
+    def __str__(self):
+        return ' '.join(map(str, self.heap))  # Убрана сортировка по номеру
+
+
+def edges2adj(N, edges):
+    adj = [[] for _ in range(N)]
+    for u, v, cost in edges:
+        adj[u].append((v, cost))
+        adj[v].append((u, cost))
+    return adj
+
+
+def Dijkstra_init(G, s):
+    N = len(G)
+    d = [float('inf')] * N
+    pi = [None] * N
+    d[s] = 0
+    return (d, pi)
+
+
+def counting_sort_neighbors(neighbors):
+    if not neighbors:
+        return []
+    max_v = max(n[0] for n in neighbors)
+    count = [0] * (max_v + 1)
+    for n in neighbors:
+        count[n[0]] += 1
+    for i in range(1, max_v + 1):
+        count[i] += count[i-1]
+    output = [0] * len(neighbors)
+    for n in reversed(neighbors):
+        output[count[n[0]]-1] = n
+        count[n[0]] -= 1
+    return output
+
+# G - граф в виде списков смежных вершин, построенный с помощью edges2adj
+# s - стартовая вершина
+def Dijkstra_optimal(G, s):
+    # инициализируем массивы d и pi
+    d, pi = Dijkstra_init(G, s)
+    N = len(G)
+    INF = N * 100
+
+    # создаем кучу, кладем в нее все вершины и делаем приоритет 0 для вершины s
+    heap = Heap()
+    for v in range(N):
+        heap.add(HeapItem(v, 0 if v == s else INF))
+
+    # запускаем цикл, выполняющийся N раз, где N - количество вершин в графе
+    for _ in range(N):
+        # печатаем кучу
+        print(heap)
+
+        # находим вершину с минимальной жадной оценкой Дейкстры (с помощью кучи)
+        u_item = heap.get_min()
+        if u_item is None:
+            break
+        u = u_item.v
+
+        neighbors = counting_sort_neighbors(G[u])
+        # пробегаемся по всем ее соседям v и делаем релаксацию ребер (u,v)
+        # не забываем менять жадную оценку не только в d, но и в куче!
+        for v, cost in neighbors:
+            if d[v] > d[u] + cost:
+                d[v] = d[u] + cost
+                pi[v] = u
+                heap.add(HeapItem(v, d[v]))
+
+    # возвращаем ответ
+    return (d, pi)
+
+
+def main():
+    import sys
+    input_lines = [line.strip() for line in sys.stdin if line.strip()]
+    N, s = map(int, input_lines[0].split())
+    edges = []
+    for line in input_lines[1:]:
+        u, v, cost = map(int, line.split())
+        edges.append((u, v, cost))
+    
+    G = edges2adj(N, edges)
+    d, pi = Dijkstra_optimal(G, s)
+    
+    print([x if x != float('inf') else -1 for x in d])
+    print(pi)
+
+if __name__ == "__main__":
+    main()
+    
+"""
+0/0 1/400 2/400 3/400
+2/1 3/400 1/4
+1/3 3/7
+3/6
+[0, 3, 1, 6]
+[None, 2, 0, 1]
+"""
