@@ -1,3 +1,5 @@
+import random
+
 class Graph:
     def __init__(self):
         self.adjacency_list = {} 
@@ -12,6 +14,8 @@ class Graph:
         self.adjacency_list[v].append((u, weight))
     def __str__(self):
         return "\n".join(f"{node}: {neighbors}" for node, neighbors in self.adjacency_list.items())
+
+
 def read_graph(graph):
     with open("hw5_data.txt", 'r') as file:
         for line in file:
@@ -61,22 +65,28 @@ graph1 = Graph()
 read_graph(graph1)
 start_vertex = 1
 shortest_paths = dijkstra_slow(graph1, start_vertex)
-
+print(graph1)
 #Вывод результатов
 for vertex in range(1, 201):
-    print(f"Кратчайшее расстояние от {start_vertex} до {vertex}: {shortest_paths[vertex]}")        
+    print(f"Кратчайшее расстояние от {start_vertex} до {vertex}: {shortest_paths[vertex]}")     
+
+
 def randomize(n, p, w):
     V = set(range(n))
     E = []
     for i in range(n):
         for j in range(i + 1, n):
             if random.random() < p:
-                weight = random(range(1, w + 1))        #добавление случайного веса
+                weight = random.randint(1, w + 1)     #добавление случайного веса
                 E.append((i, j, weight))
-    g = (V, E)
+    g = Graph()
+    for i in E:
+        g.add_edge(i)
+
     return g
 
-
+g = randomize(6, 4, 19)
+print(g)
 class HeapItem:
     def __init__(self, v, p):
         self.v = v
@@ -255,11 +265,4 @@ def main():
 if __name__ == "__main__":
     main()
     
-"""
-0/0 1/400 2/400 3/400
-2/1 3/400 1/4
-1/3 3/7
-3/6
-[0, 3, 1, 6]
-[None, 2, 0, 1]
-"""
+
