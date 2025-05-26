@@ -1,2 +1,3 @@
-for i in range(100):
-    print("hey hey hee ")
+def freenuggets(count):
+    for i in count:
+        print("no free nuggets today")
