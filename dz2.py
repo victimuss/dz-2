@@ -66,12 +66,6 @@ graph1 = Graph()
 read_graph(graph1)
 start_vertex = 1
 shortest_paths = dijkstra_slow(graph1, start_vertex)
-print(graph1)
-#Вывод результатов
-for vertex in range(1, 201):
-    print(f"Кратчайшее расстояние от {start_vertex} до {vertex}: {shortest_paths[vertex]}")     
-
-
 
 # Вывод результатов
 # for vertex in range(1, 201):
@@ -87,15 +81,12 @@ def randomize(n, p, w):
                 E.append((i, j, weight))
     g = Graph()
     for i in E:
-        g.add_edge(i)
+        g.add_edge(i[0],i[1],i[2])
 
     return g
-    g = (V, E)
-    return E
 
 g = randomize(6, 4, 19)
 print(g)
-print(randomize(10,10,10))
 
 class HeapItem:
     def __init__(self, v, p):
