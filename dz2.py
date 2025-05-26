@@ -31,7 +31,7 @@ def read_graph(graph):
 # Пример использования
 def dijkstra_slow(graph, start_vertex, total_vertices=200):
     # Инициализация расстояний
-    distances = {v: float('inf') for v in range(1, total_vertices + 1)}
+    distances = {v: float('inf') for v in range(0, total_vertices + 1)}
     distances[start_vertex] = 0
     visited = [False] * (total_vertices + 1)  # Индексы 0..200
 
@@ -65,13 +65,12 @@ def dijkstra_slow(graph, start_vertex, total_vertices=200):
 graph1 = Graph()
 read_graph(graph1)
 start_vertex = 1
-shortest_paths = dijkstra_slow(graph1, start_vertex)
 
 # Вывод результатов
 # for vertex in range(1, 201):
 #     print(f"Кратчайшее расстояние от {start_vertex} до {vertex}: {shortest_paths[vertex]}")        
 def randomize(n, p, w):
-    V = set(range(n))
+    V = set(range(1,n))
     E = []
     for i in range(n):
         for j in range(i + 1, n):
@@ -87,7 +86,9 @@ def randomize(n, p, w):
 
 g = randomize(6, 4, 19)
 print(g)
-
+shortest_paths = dijkstra_slow(g, start_vertex)
+for vertex in range(0, 6):
+    print(f"Кратчайшее расстояние от {start_vertex} до {vertex}: {shortest_paths[vertex]}")        
 class HeapItem:
     def __init__(self, v, p):
         self.v = v
