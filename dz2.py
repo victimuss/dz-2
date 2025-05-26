@@ -57,7 +57,6 @@ def dijkstra_slow(graph, start_vertex, total_vertices=200):
 
     return distances
 
-# Чтение графа из файла (замени 'input.txt' на путь к файлу)
 graph1 = Graph()
 read_graph(graph1)
 start_vertex = 1
