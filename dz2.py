@@ -1,3 +1,4 @@
+import random
 class Graph:
     def __init__(self):
         self.adjacency_list = {} 
@@ -62,20 +63,21 @@ read_graph(graph1)
 start_vertex = 1
 shortest_paths = dijkstra_slow(graph1, start_vertex)
 
-#Вывод результатов
-for vertex in range(1, 201):
-    print(f"Кратчайшее расстояние от {start_vertex} до {vertex}: {shortest_paths[vertex]}")        
+# Вывод результатов
+# for vertex in range(1, 201):
+#     print(f"Кратчайшее расстояние от {start_vertex} до {vertex}: {shortest_paths[vertex]}")        
 def randomize(n, p, w):
     V = set(range(n))
     E = []
     for i in range(n):
         for j in range(i + 1, n):
             if random.random() < p:
-                weight = random(range(1, w + 1))        #добавление случайного веса
+                weight = random.randint(1, w + 1)        #добавление случайного веса
                 E.append((i, j, weight))
     g = (V, E)
-    return g
+    return E
 
+print(randomize(10,10,10))
 
 class HeapItem:
     def __init__(self, v, p):
