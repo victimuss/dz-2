@@ -1,4 +1,5 @@
 import random
+import time
 
 import random
 class Graph:
@@ -86,9 +87,13 @@ def randomize(n, p, w):
 
 g = randomize(6, 4, 19)
 print(g)
+
 shortest_paths = dijkstra_slow(g, start_vertex)
 for vertex in range(0, 6):
-    print(f"Кратчайшее расстояние от {start_vertex} до {vertex}: {shortest_paths[vertex]}")        
+    print(f"Кратчайшее расстояние от {start_vertex} до {vertex}: {shortest_paths[vertex]}")       
+
+
+
 class HeapItem:
     def __init__(self, v, p):
         self.v = v
@@ -180,23 +185,6 @@ class Heap:
     def __str__(self):
         return ' '.join(map(str, self.heap))  # Убрана сортировка по номеру
 
-
-def edges2adj(N, edges):
-    adj = [[] for _ in range(N)]
-    for u, v, cost in edges:
-        adj[u].append((v, cost))
-        adj[v].append((u, cost))
-    return adj
-
-
-def Dijkstra_init(G, s):
-    N = len(G)
-    d = [float('inf')] * N
-    pi = [None] * N
-    d[s] = 0
-    return (d, pi)
-
-
 def counting_sort_neighbors(neighbors):
     if not neighbors:
         return []
@@ -212,9 +200,8 @@ def counting_sort_neighbors(neighbors):
         count[n[0]] -= 1
     return output
 
-# G - граф в виде списков смежных вершин, построенный с помощью edges2adj
-# s - стартовая вершина
-def Dijkstra_optimal(G, s):
+
+def  Dijkstra_fast(G, s):
     # инициализируем массивы d и pi
     d, pi = Dijkstra_init(G, s)
     N = len(G)
@@ -249,22 +236,5 @@ def Dijkstra_optimal(G, s):
     return (d, pi)
 
 
-def main():
-    import sys
-    input_lines = [line.strip() for line in sys.stdin if line.strip()]
-    N, s = map(int, input_lines[0].split())
-    edges = []
-    for line in input_lines[1:]:
-        u, v, cost = map(int, line.split())
-        edges.append((u, v, cost))
-    
-    G = edges2adj(N, edges)
-    d, pi = Dijkstra_optimal(G, s)
-    
-    print([x if x != float('inf') else -1 for x in d])
-    print(pi)
-
-if __name__ == "__main__":
-    main()
     
 
