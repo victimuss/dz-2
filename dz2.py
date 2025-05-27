@@ -1,10 +1,10 @@
 import random, time, matplotlib.pyplot as plt
 
 class Graph:
-    def __init__(self):
+    def __init__(self): #Инициализация
         self.adjacency_list = {} 
 
-    def add_edge(self, u, v, weight):
+    def add_edge(self, u, v, weight): #Добавление вершины
         if u not in self.adjacency_list:
             self.adjacency_list[u] = []
         self.adjacency_list[u].append((v, weight))
@@ -13,22 +13,22 @@ class Graph:
             self.adjacency_list[v] = []
         self.adjacency_list[v].append((u, weight))
 
-    def len(self):
+    def len(self): #Вывод "длины" графа(Соня просила и ни разу не использовала :р)
         return(len(self.adjacency_list.keys()))
     
     def __str__(self):
         return "\n".join(f"{node}: {neighbors}" for node, neighbors in self.adjacency_list.items())
 
 
-def read_graph(graph):
+def read_graph(graph): 
     with open("hw5_data.txt", 'r') as file:
-        for line in file:
+        for line in file: #Разбитие на линии
             parts = line.strip().split()
             if not parts:
                 continue
             u = int(parts[0])
             for pair in parts[1:]:
-                v, weight = map(int, pair.split(','))
+                v, weight = map(int, pair.split(',')) #Добавление троек через метод add_edge
                 graph.add_edge(u, v, weight)
 
 # Пример использования
