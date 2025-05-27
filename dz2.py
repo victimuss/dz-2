@@ -68,6 +68,12 @@ def dijkstra_slow(graph, start_vertex=1, total_vertices=200):
 graph1 = Graph()
 read_graph(graph1)
 start_vertex = 1
+shortest_paths = dijkstra_slow(graph1, start_vertex)
+
+#Вывод результатов
+for vertex in range(1, 201):
+    print(f"Кратчайшее расстояние от {start_vertex} до {vertex}: {shortest_paths[vertex]}")  
+
       
 def randomize(n, p, w):
     E = []
@@ -82,12 +88,11 @@ def randomize(n, p, w):
 
     return g
 
-g = randomize(6, 0, 19)
-g = randomize(6, 0, 19)
+g = randomize(6, 0.5, 19)
 print(g)
 print(g.len())
 shortest_paths = dijkstra_slow(g, start_vertex)
-for vertex in range(0, 6):
+for vertex in range(0, 5):
     print(f"Кратчайшее расстояние от {start_vertex} до {vertex}: {shortest_paths[vertex]}")       
 
 
