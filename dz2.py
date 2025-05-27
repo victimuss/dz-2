@@ -185,64 +185,28 @@ class Heap:
     def __str__(self):
         return ' '.join(map(str, self.heap))  # Убрана сортировка по номеру
 
-def Dijkstra_init(G, s):
+def Dijkstra_fast(G, s):
     N = len(G)
     d = [float('inf')] * N
     pi = [None] * N
     d[s] = 0
-    return (d, pi)
 
-def counting_sort_neighbors(neighbors):
-    if not neighbors:
-        return []
-    max_v = max(n[0] for n in neighbors)
-    count = [0] * (max_v + 1)
-    for n in neighbors:
-        count[n[0]] += 1
-    for i in range(1, max_v + 1):
-        count[i] += count[i-1]
-    output = [0] * len(neighbors)
-    for n in reversed(neighbors):
-        output[count[n[0]]-1] = n
-        count[n[0]] -= 1
-    return output
-
-
-def  Dijkstra_fast(G, s):
-    # инициализируем массивы d и pi
-    d, pi = Dijkstra_init(G, s)
-    N = len(G)
-    INF = N * 100
-
-    # создаем кучу, кладем в нее все вершины и делаем приоритет 0 для вершины s
     heap = Heap()
     for v in range(N):
-        heap.add(HeapItem(v, 0 if v == s else INF))
+        heap.add(HeapItem(v, d[v]))
 
-    # запускаем цикл, выполняющийся N раз, где N - количество вершин в графе
-    for _ in range(N):
-        # печатаем кучу
-        print(heap)
-
-        # находим вершину с минимальной жадной оценкой Дейкстры (с помощью кучи)
+    while heap.heap:
         u_item = heap.get_min()
-        if u_item is None:
-            break
         u = u_item.v
-
-        neighbors = counting_sort_neighbors(G[u])
-        # пробегаемся по всем ее соседям v и делаем релаксацию ребер (u,v)
-        # не забываем менять жадную оценку не только в d, но и в куче!
-        for v, cost in neighbors:
+        for v, cost in G[u]:
             if d[v] > d[u] + cost:
                 d[v] = d[u] + cost
                 pi[v] = u
-                heap.add(HeapItem(v, d[v]))
+                heap.add(HeapItem(v, d[v]))  
 
-    # возвращаем ответ
     return (d, pi)
 
-
+print(Dijkstra_fast(g, 0))
 
 
     
