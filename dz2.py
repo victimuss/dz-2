@@ -14,6 +14,10 @@ class Graph:
         if v not in self.adjacency_list:
             self.adjacency_list[v] = []
         self.adjacency_list[v].append((u, weight))
+
+    def len(self):
+        return(len(self.adjacency_list.keys()))
+    
     def __str__(self):
         return "\n".join(f"{node}: {neighbors}" for node, neighbors in self.adjacency_list.items())
 
@@ -77,7 +81,6 @@ def randomize(n, p, w):
         for j in range(i + 1, n):
             if random.random() < p:
                 weight = random.randint(1, w + 1)     #добавление случайного веса
-                weight = random.randint(1, w + 1)        #добавление случайного веса
                 E.append((i, j, weight))
     g = Graph()
     for i in E:
@@ -85,9 +88,9 @@ def randomize(n, p, w):
 
     return g
 
-g = randomize(6, 4, 19)
+g = randomize(6, 0, 19)
 print(g)
-
+print(g.len())
 shortest_paths = dijkstra_slow(g, start_vertex)
 for vertex in range(0, 6):
     print(f"Кратчайшее расстояние от {start_vertex} до {vertex}: {shortest_paths[vertex]}")       
@@ -207,6 +210,11 @@ def Dijkstra_fast(G, s):
     return (d, pi)
 
 print(Dijkstra_fast(g, 0))
+def benchmark(n_values, graph_per_n = 5):
+    pass
+
+
+
 
 
     
