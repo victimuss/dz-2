@@ -183,7 +183,7 @@ class Heap:
     def __str__(self):
         return ' '.join(map(str, self.heap))  # Убрана сортировка по номеру
 
-def Dijkstra_fast(graph, start_vertex):
+def Dijkstra_fast(graph, start_vertex=1):
     # Инициализация расстояний и предшественников
     distances = {v: float('inf') for v in graph.adjacency_list}
     predecessors = {v: None for v in graph.adjacency_list}
@@ -250,8 +250,8 @@ def benchmark(
         
         # Усреднение результатов
         results["n"].append(n)
-        results["Algorithm1"].append(total_time_alg1 / graphs_per_n)
-        results["Algorithm2"].append(total_time_alg2 / graphs_per_n)
+        results["DijkstraSlow"].append(total_time_alg1 / graphs_per_n)
+        results["DijkstraFast"].append(total_time_alg2 / graphs_per_n)
     
     # Построение графиков
     plt.figure(figsize=(10, 6))
@@ -266,11 +266,8 @@ def benchmark(
     
     return results
 benchmark(randomize, dijkstra_slow, Dijkstra_fast)
-print(Dijkstra_fast(g, 0))
-def benchmark(n_values, graph_per_n = 5):
-    pass
 
-print(Dijkstra_fast(g, 0))
+
 
 
 
