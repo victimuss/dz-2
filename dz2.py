@@ -115,15 +115,19 @@ class Heap:
         self.position = {}  # Трекинг позиций вершин
 
     def left_son(self, p):
+        # возвращаем индекс левого сына элемента p
         return 2 * p + 1
 
     def right_son(self, p):
+        # возвращаем индекс правого сына элемента p
         return 2 * p + 2
 
     def parent(self, p):
+        # возвращаем индекс родителя элемента p
         return (p - 1) // 2 if p != 0 else 0
 
     def min_son(self, p):
+        # возвращаем индекс минимального сына элемента p или -1, если p - лист
         left = self.left_son(p)
         right = self.right_son(p)
         n = len(self.heap)
@@ -133,16 +137,19 @@ class Heap:
         if right >= n:
             return left
 
+         # оба сына есть, возвращаем индекс с меньшим значением
         if self.heap[left] < self.heap[right]:
             return left
         else:
             return right
 
     def sift_up(self, p):
+        # если мы в корне, то выходим
         if p == 0:
             return
 
         prnt = self.parent(p)
+        # пока мы не в корне и текущий элемент меньше родительского, меняем их и поднимаемся выше
         while p > 0 and self.heap[p] < self.heap[prnt]:
             self.position[self.heap[p].v] = prnt
             self.position[self.heap[prnt].v] = p
@@ -151,6 +158,8 @@ class Heap:
             prnt = self.parent(p)
 
     def sift_down(self, p):
+        # пока мы не в листе и текущий элемент больше минимального из сыновей,
+        # меняем их местами и погружаемся ниже
         minCh = self.min_son(p)
         while minCh != -1 and self.heap[p] > self.heap[minCh]:
             self.position[self.heap[p].v] = minCh
@@ -160,6 +169,7 @@ class Heap:
             minCh = self.min_son(p)
 
     def add(self, x):
+        # добавляем элемент x в кучу
         if x.v in self.position:
             pos = self.position[x.v]
             if x.priority < self.heap[pos].priority:
@@ -172,6 +182,7 @@ class Heap:
         self.sift_up(len(self.heap) - 1)
 
     def get_min(self):
+        # возвращаем значение минимального элемента, удаляя его из кучи
         if not self.heap:
             return None
 
@@ -186,6 +197,7 @@ class Heap:
         return min_elem
 
     def __str__(self):
+        # печать массива с бинарным деревом кучи
         return ' '.join(map(str, self.heap))  # Убрана сортировка по номеру
 
 def Dijkstra_fast(graph, start_vertex=1):
