@@ -183,26 +183,42 @@ class Heap:
     def __str__(self):
         return ' '.join(map(str, self.heap))  # Убрана сортировка по номеру
 
-def Dijkstra_fast(G, s):
-    N = len(G)
-    d = [float('inf')] * N
-    pi = [None] * N
-    d[s] = 0
+def Dijkstra_fast(graph, start_vertex):
+    # Инициализация расстояний и предшественников
+    distances = {v: float('inf') for v in graph.adjacency_list}
+    predecessors = {v: None for v in graph.adjacency_list}
+    distances[start_vertex] = 0
 
+    # Создаем кучу и добавляем все вершины
     heap = Heap()
-    for v in range(N):
-        heap.add(HeapItem(v, d[v]))
+    for v in graph.adjacency_list:
+        heap.add(HeapItem(v, distances[v]))
 
+    # Основной цикл алгоритма
     while heap.heap:
+        # Извлекаем вершину с минимальным расстоянием
         u_item = heap.get_min()
-        u = u_item.v
-        for v, cost in G[u]:
-            if d[v] > d[u] + cost:
-                d[v] = d[u] + cost
-                pi[v] = u
-                heap.add(HeapItem(v, d[v]))  
+        if u_item is None:
+            break
+            
+        current_vertex = u_item.v
+        current_dist = u_item.priority
 
-    return (d, pi)
+        # Релаксация всех соседей
+        for neighbor, weight in graph.adjacency_list.get(current_vertex, []):
+            new_dist = current_dist + weight
+            if new_dist < distances[neighbor]:
+                # Обновляем расстояния и добавляем в кучу
+                distances[neighbor] = new_dist
+                predecessors[neighbor] = current_vertex
+                heap.add(HeapItem(neighbor, new_dist))
+
+    # Конвертируем в списки для совместимости
+    sorted_vertices = sorted(graph.adjacency_list.keys())
+    distance_list = [distances[v] for v in sorted_vertices]
+    predecessor_list = [predecessors[v] for v in sorted_vertices]
+
+    return distance_list, predecessor_list
 
 def benchmark(
     generate_graph_func,  # Функция генерации графа: generate_graph(n) -> graph
@@ -249,12 +265,12 @@ def benchmark(
     plt.show()
     
     return results
-benchmark(randomize(),dijkstra_slow(),Dijkstra_fast(),)
+benchmark(randomize, dijkstra_slow, Dijkstra_fast)
 print(Dijkstra_fast(g, 0))
 def benchmark(n_values, graph_per_n = 5):
     pass
 
-
+print(Dijkstra_fast(g, 0))
 
 
 
