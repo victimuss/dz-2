@@ -1,7 +1,5 @@
-import random
-import time
+import random, time, matplotlib.pyplot as plt
 
-import random
 class Graph:
     def __init__(self):
         self.adjacency_list = {} 
@@ -34,7 +32,7 @@ def read_graph(graph):
                 graph.add_edge(u, v, weight)
 
 # Пример использования
-def dijkstra_slow(graph, start_vertex, total_vertices=200):
+def dijkstra_slow(graph, start_vertex=1, total_vertices=200):
     # Инициализация расстояний
     distances = {v: float('inf') for v in range(0, total_vertices + 1)}
     distances[start_vertex] = 0
@@ -70,12 +68,8 @@ def dijkstra_slow(graph, start_vertex, total_vertices=200):
 graph1 = Graph()
 read_graph(graph1)
 start_vertex = 1
-
-# Вывод результатов
-# for vertex in range(1, 201):
-#     print(f"Кратчайшее расстояние от {start_vertex} до {vertex}: {shortest_paths[vertex]}")        
+      
 def randomize(n, p, w):
-    V = set(range(1,n))
     E = []
     for i in range(n):
         for j in range(i + 1, n):
@@ -88,6 +82,7 @@ def randomize(n, p, w):
 
     return g
 
+g = randomize(6, 0, 19)
 g = randomize(6, 0, 19)
 print(g)
 print(g.len())
@@ -209,6 +204,52 @@ def Dijkstra_fast(G, s):
 
     return (d, pi)
 
+def benchmark(
+    generate_graph_func,  # Функция генерации графа: generate_graph(n) -> graph
+    DijkstraSlow,           # Алгоритм 1: algorithm1(graph) -> result
+    DijkstraFast,           # Алгоритм 2: algorithm2(graph) -> result
+    A=10,                 # Минимальное количество вершин
+    B=100,                # Максимальное количество вершин
+    step=10,              # Шаг изменения n
+    graphs_per_n=5,       # Количество графов для усреднения на каждое n
+):
+    results = {"n": [], "DijkstraSlow": [], "DijkstraFast": []}
+    
+    for n in range(A, B + 1, step):
+        total_time_alg1 = 0.0
+        total_time_alg2 = 0.0
+        
+        for _ in range(graphs_per_n):
+            graph = generate_graph_func(n,p=random.random(),w=random.randint(A,B))  # Генерация графа
+            
+            # Замер времени для медленного Дейкстры
+            start = time.perf_counter()
+            DijkstraSlow(graph)
+            total_time_alg1 += time.perf_counter() - start
+            
+            # Замер времени для быстрого Дейкстры
+            start = time.perf_counter()
+            DijkstraFast(graph)
+            total_time_alg2 += time.perf_counter() - start
+        
+        # Усреднение результатов
+        results["n"].append(n)
+        results["Algorithm1"].append(total_time_alg1 / graphs_per_n)
+        results["Algorithm2"].append(total_time_alg2 / graphs_per_n)
+    
+    # Построение графиков
+    plt.figure(figsize=(10, 6))
+    plt.plot(results["n"], results["DijkstraSlow"], "o-", label="DijkstraSlow 1")
+    plt.plot(results["n"], results["DijkstraFast"], "s-", label="DijkstraFast 2")
+    plt.xlabel("Количество вершин (n)", fontsize=12)
+    plt.ylabel("Среднее время (сек)", fontsize=12)
+    plt.title("Зависимость времени выполнения от n", fontsize=14)
+    plt.grid(True, linestyle="--", alpha=0.7)
+    plt.legend()
+    plt.show()
+    
+    return results
+benchmark(randomize(),dijkstra_slow(),Dijkstra_fast(),)
 print(Dijkstra_fast(g, 0))
 def benchmark(n_values, graph_per_n = 5):
     pass
