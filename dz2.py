@@ -189,6 +189,13 @@ class Heap:
     def __str__(self):
         return ' '.join(map(str, self.heap))  # Убрана сортировка по номеру
 
+def Dijkstra_init(G, s):
+    N = len(G)
+    d = [float('inf')] * N
+    pi = [None] * N
+    d[s] = 0
+    return (d, pi)
+
 def counting_sort_neighbors(neighbors):
     if not neighbors:
         return []
@@ -241,6 +248,8 @@ def  Dijkstra_fast(G, s):
 
 def benchmark(n_values, graph_per_n = 5):
     pass
+
+
 
 
 
